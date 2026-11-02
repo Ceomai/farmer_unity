@@ -20,3 +20,7 @@ PlayerSettings:
   AndroidMinSdkVersion: 24
   activeInputHandler: 0
   m_ActiveColorSpace: 1
+  webGLCompressionFormat: 2
+  webGLDataCaching: 1
+  webGLMemorySize: 256
+  webGLTemplate: APPLICATION:Default

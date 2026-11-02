@@ -2,6 +2,23 @@
 
 [Ceomai/farmer](https://github.com/Ceomai/farmer) web oyununun (JS + Three.js) Unity 6 LTS ile baştan yazılmış hâli. Oyun kuralları, sayılar, Türkçe metinler, ekranlar, 3D modeller ve kayıt biçimi web sürümüyle aynıdır; web kaydı ya da bulut kaydı bu sürümde açılabilir.
 
+## Hemen oyna
+
+| 🌐 Web'de oyna | 📱 Android APK (test sürümü) |
+|:---:|:---:|
+| <img src="docs/qr/web-qr.png" width="200" alt="Web QR"> | <img src="docs/qr/apk-qr.png" width="200" alt="APK QR"> |
+| **[ceomai.github.io/farmer_unity](https://ceomai.github.io/farmer_unity/)** | **[ciftlik-imparatorlugu.apk](https://github.com/Ceomai/farmer_unity/releases/download/test-surum/ciftlik-imparatorlugu.apk)** |
+
+Bağlantılar sabittir: `main` dalına her gönderimde GitHub Actions (`.github/workflows/build.yml`, GameCI) projeyi Unity ile derler, web sürümünü GitHub Pages'e ve APK'yı `test-surum` sürümüne yükler.
+
+Derlemenin çalışması için repo ayarlarında (Settings → Secrets and variables → Actions) üç gizli değer gerekir:
+
+| Ad | Değer |
+|---|---|
+| `UNITY_EMAIL` | Unity hesabının e-postası |
+| `UNITY_PASSWORD` | Unity hesabının şifresi |
+| `UNITY_LICENSE` | Ücretsiz Personal lisans dosyasının içeriği: bir bilgisayarda Unity Hub'a giriş yapıp lisansı etkinleştirdikten sonra `C:\ProgramData\Unity\Unity_lic.ulf` dosyasındaki metnin tamamı |
+
 ## Açma
 
 1. Unity Hub → **Add project from disk** → bu klasör.

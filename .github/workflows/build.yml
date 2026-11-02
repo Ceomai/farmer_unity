@@ -1,0 +1,72 @@
+name: Derle (Web + Android)
+
+# Her main gönderiminde Unity projesi GameCI ile derlenir:
+#  - WebGL sürümü GitHub Pages'e yayınlanır → https://ceomai.github.io/farmer_unity/
+#  - Android APK "test-surum" sürümüne yüklenir
+# Gerekli repo gizli değerleri (Settings → Secrets and variables → Actions):
+#  UNITY_LICENSE (Unity_lic.ulf dosyasının içeriği), UNITY_EMAIL, UNITY_PASSWORD
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: derle-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+  UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+  UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+
+jobs:
+  webgl:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+          path: Library
+          key: Library-WebGL-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          restore-keys: Library-WebGL-
+      - uses: game-ci/unity-builder@v4
+        with:
+          targetPlatform: WebGL
+          buildName: farmer_unity
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/WebGL/farmer_unity
+      - id: deploy
+        uses: actions/deploy-pages@v4
+
+  android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: jlumbroso/free-disk-space@v1.3.1
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+          path: Library
+          key: Library-Android-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          restore-keys: Library-Android-
+      - uses: game-ci/unity-builder@v4
+        with:
+          targetPlatform: Android
+          buildName: ciftlik-imparatorlugu
+      - name: APK'yı test sürümüne yükle
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          APK=$(find build/Android -name '*.apk' | head -1)
+          cp "$APK" ciftlik-imparatorlugu.apk
+          gh release view test-surum >/dev/null 2>&1 || gh release create test-surum --title "Test sürümü" --notes "Her main gönderiminde kendiliğinden güncellenir." --prerelease
+          gh release upload test-surum ciftlik-imparatorlugu.apk --clobber
