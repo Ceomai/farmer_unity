@@ -1,0 +1,47 @@
+# G6 (index.template.html + game.css → UI/Hud.cs, UI/Css.cs, UI/Dom.cs, UI/Layouts.cs; 12-panels, 13-events, 36-strip, 38-batch)
+# Diğer gruplardan çağrılan adlar (tümü mevcut kodla derleniyor; imzalar o kodla eşleştirildi)
+
+# --- G1 ---
+Scaled(Recipe r, int l) -> ScaledDef { Dictionary<string,int> @out; double t }     // scaled
+Secs(double s) -> string ; SecShort(double s) -> string                             // secs, secShort
+UpBlock(int l) -> string ("" = engel yok) ; UpCost(string u) -> double ; QMAX ; MAXL ; HOUSE ; PLOT_COST/PLOT_LV/FIELD_UP (List) ; INSIDE_UNITS (Dictionary<string,int>)
+Has, Has1, CanPay, UnitRecipe, Prog(Job)->double, StageOf, CropOf, CropSeasonOk, CropLocked, Stored()->int, Cap()->int, Owned, XpNeed(int)->double
+Fresh, Save, RefreshMarket(bool), EnsureOrders, GenOrder, FillOrder(int), Sell(string,int), SellExcess(int,bool=false)->double, SellPrice(string,int=1)->double,
+SatF(string,double=0), BuyFeed(int), AutoSellTick, ReadyOrders()->int, RepMult()->double, ClaimGoal, GoalReady, GOALS (GoalDef{d, Func<bool> ok, r}),
+Gain(double,string), AddXP(double), Toast(string), FloatXY(float,float,string), RegCost(string)->double, Season()->int, SEASONS[i].e/.n, WEATHER[k].e, ClockStr()
+Order.@base / Order.xp (02_State partial)
+BuildUnit, UpgradeUnit, UpgradeHouse, UpgradeFields, StartUnit(u,rid,quiet=false), QueueAdd, QueueDel(u,int), QueueNext(u)->bool,
+CollectUnit(u, float? x, float? y, bool quiet)->bool, HarvestPlot(int, float?, float?, bool)->bool, PlantPlot(int,string,bool=false)->bool, PlantAll, HarvestAll, BuyPlot, BuyRegion(string)
+
+# --- G2 ---
+LoveRow(Transform,string) ; ExtraRow(Transform,string) ; SpeedBtns(Transform,string kind,double ms,string u=null) ; WorkerBtn(Transform,string)
+Face(string)->string ; Hearts(string)->string (zengin metin) ; FrMult(string)->double
+ContractsBody/FriendsBody/FairBody/RaceBody(Transform) ; SheetShop(Transform) ; RaceState { bool running } (21) ; WorkOn(string)->bool ; RenewWorker(string,bool=false)->bool
+Hire, DeliverContract(int), EnterContest(string), StableHorse, TrainHorse(int), LeagueRace(int), BuyDecor(string), WatchAd(Action), SpeedUnit(u,how), SpeedFields(how), MgMilk(u), MgEggs, MgHaggle
+DailyHTML(Transform)
+
+# --- G3 ---
+OUT (Material, dış çizgi; "ol" çocukları bu malzemeyle) ; Eng_IsTransparent(Material)->bool ; UData (seçim etiketleri: plot, plotBuy, unit, loc, region, farmer, open, act, noBatch — yansıma ile okunur)
+
+# --- G4 ---
+Mode, Focus (string) ; Interior { key, sig, Action refresh } ; IntSig(string)->string
+Int_BodyHas(string)->bool ; Int_BodyToggle(string,bool) ; Int_BodyCls (HashSet) ; Int_BodyMode ; Int_BackHidden / Int_BackText (#backBtn) ; event Int_OnBody
+In_Swipe { kind, HashSet<int> done, n } ; static In_Swipe Swipe ; SwipeKind(int)->string ; SwipeApply(int,float,float) ; SwipeEnd()
+LeaveInterior, EnterInterior(string), ToHub, ApplyUI, SyncWorld(bool force=false), RotateCam(double), ZoomCam(double), GoLocation(string), OpenRegion(string),
+PhotoMode(bool), Shoot(), FlyItems(float,float,Dictionary<string,int>), FlyCoins(int), Celebrate(string), World (Transform), RegSig, LocStatus(string)->Mk_Status{c,t,int n}
+Tut_Tag(Component, params string[]) (G7, 37-tutorial) — .scard[data-go=".."], .plot.empty, .plot.ready, .tile[data-u=".."], .order, #sheet, satış "Tümü" etiketlenir
+
+# --- G5 ---
+ToDesk, DeskAction(string), SheetLedger/SheetMail/SheetBorsa/SheetBudget/SheetStats(Transform), PLATFORM.Hap(kind="light"), PLATFORM.Buy(id), PLATFORM.AskNotif(Action<bool?>),
+NATIVE, AutoGain (int), AudioInit, ApplySound, Sfx(string), RestoreAccount(string), RecoveryCode()->string, AccountHTML(Transform), GFX{mode,low}, SetGfx(string)
+
+# --- G7 ---
+SheetAlbum(Transform), SheetGuide(Transform), ProjBody(Transform), GenHTML(Transform), DoProj(id), AskGen(), DoQuest(n), ClaimAch(id)
+
+# --- G6'nın sunduğu (başkaları için) ---
+View (class View {k, loc, r, tab, sig; bool mini, confirm}) ; Race ; Sheet (RectTransform) ; THUMB (Dictionary<string,Texture>) ; HNAMES
+Head(Transform, string thumb, string title, string sub) (+ Action<Transform> thumb/sub aşırı yüklemeleri) ; ShBody(Transform)->content ; Stars ; Img ; OutOf ; RecipeTiles ; JobRow ; UpBtn ; QueueHTML ; UnitHTML
+RenderSheet, OpenView, CloseSheet, SetDock, SheetSig, RenderHUD, Commit(bool skipSheet=false), BodyHas(cls), BodyClass(cls,on), Ev_Change(id,on)
+RenderStrip(bool), QuickLoc/QuickInfo/QuickAll/QuickFeedback, LocOrder, StepLoc(int), OpenQpop/CloseQpop/RefreshQpop, BatchWatch(root, skip, delay), BatchCheck, DisposeBaked
+Dom.Q / Dom.QAll (querySelector), Dom.Tag ; Css.* (game.css sınıfları) ; HudView (#coins, #pCoin, #pStore, #goalDot, #strip, #boot, #backBtn, .dock, .cam ...)
+Tıklama eylemleri (data-* karşılığı): "data-go"(go), "data-region"(region), "data-open"(open), "data-desk"(desk), "data-quick"(quick), "data-quickall", "data-locstep"(locstep), "change"(id,on)

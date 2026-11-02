@@ -1,0 +1,87 @@
+# G2 (18-workers, 19-contracts, 20-fair, 21-horse-league, 22-minigames, 23-shop, 24-daily, 26-animal-love, 27-friends) — başka gruplardan beklenenler
+# Tür adları: ItemDef/Recipe/BuildingDef/HouseDef/RegionDef/LocDef (01-data, PORTING.md'deki gibi)
+
+# ---- G1: 01-data ----
+ITEMS : Dictionary<string,ItemDef>                     // ITEMS
+B : Dictionary<string,BuildingDef>                     // B (recipes: List<Recipe>, cost double)
+HOUSE : List<HouseDef>                                 // HOUSE (.Count)
+REG : Dictionary<string,RegionDef>                     // REG
+LOC : Dictionary<string,LocDef>                        // LOC
+MAXL : const int                                       // MAXL
+LocOf(string u) -> string                              // locOf
+# ---- G1: 03-helpers ----
+Has(string k) -> int                                   // has
+Secs(double s) -> string                               // secs
+SecShort(double s) -> string                           // secShort
+Stat(string k, double n = 1) -> void                   // stat
+Pay(double n, string c = "Diğer") -> void              // pay
+Gain(double n, string c = "Diğer") -> void             // gain
+AddXP(double n) -> void                                // addXP
+CanPay(Recipe r) -> bool                               // canPay
+CropOf(string id) -> Recipe                            // cropOf
+# ---- G1: 02-state ----
+Fresh() -> State                                       // fresh
+Save() -> void                                         // save
+# ---- G1: 04-economy ----
+Producible() -> List<string>                           // producible (.Count + indeksleyici kullanılıyor)
+NAMES : List<string>                                   // NAMES
+RepMult() -> double                                    // repMult
+SellPrice(string k) -> double                          // sellPrice
+AddSat(string k, int n) -> void                        // addSat
+GOALS : List<…> (.Count)                               // GOALS
+# ---- G1: 05-farm-actions ----
+PopLoc : static string (yazılabilir alan)              // popLoc
+HarvestPlot(int i, float? x, float? y, bool quiet) -> bool        // harvestPlot(i,null,null,true)
+PlantPlot(int i, string rid, bool quiet) -> bool                  // plantPlot
+CollectUnit(string u, float? x, float? y, bool quiet) -> bool     // collectUnit(u,null,null,true)
+QueueNext(string u, bool quiet = true) -> bool                    // queueNext
+StartUnit(string u, string rid, bool quiet = false) -> void       // startUnit
+# ---- G1: 16-time-weather / 17-collection ----
+WEATHER : Dictionary<string, …> (.ContainsKey)        // WEATHER
+Has1(string id) -> bool                                // has1
+COL : List<ColDef>, ColDef.id string; COL.Find(...), COL[0]       // COL
+ShowFind(ColDef c) -> void                             // showFind
+
+# ---- G4: 09-interiors / 15-fly-items ----
+Interior : static nesne, alanı string key (null olabilir)         // interior
+BuildInterior(string key) -> void                      // buildInterior
+FlyCoins(int n = 5) -> void                            // flyCoins
+
+# ---- G5: 14-audio / 34-platform / 000-config ----
+Sfx(string name) -> void                               // sfx ('chime','build','win','pop','neigh','coin','fail','moo')
+PLATFORM.ShowAd(Action cb) -> bool                     // PLATFORM.showAd (reklam gösterildiyse true; ödülde S.ads.n++, cb(), Save())
+PLATFORM.iap : bool                                    // PLATFORM.iap
+PLATFORM.prices : Dictionary<string,string>            // PLATFORM.prices (ürün kimliği → yerel fiyat yazısı)
+PLATFORM.LocalNotify(string title, string body) -> void // new Notification(...) karşılığı: yerel bildirim arayüzü (Android/iOS yerel bildirim; editörde yok sayılabilir)
+NATIVE : bool                                          // NATIVE
+CONFIG.iapProducts : List<{string id; int gems}>       // CONFIG.iapProducts (000-config, G1)
+
+# ---- G6: 12-panels / 13-events ----
+Race : static RaceState (21_HorseLeague.cs'de tanımlı tür), başlangıçta null   // let race (12-panels) — G2 yazar/okur
+View : static nesne; alanları string k, string tab (null olabilir)            // view
+HNAMES : List<string>                                  // HNAMES (12-panels)
+RenderSheet() -> void                                  // renderSheet
+Head(Transform parent, string thumb, string title, string sub) -> void        // head(thumb,title,sub)
+Commit(bool skipSheet = false) -> void                 // commit
+# 13-events'teki şu case'ler G2 Init_NN içinde RegisterAct ile kaydedildi (aynı davranış): renew, hire, contract, contest, stable, htrain, lrace, rnew,
+#   adU, gemU, adF, gemF, mg, decor, adGem, dclaim, dbonus.  "vtab" ve "iap" G6'da kalır (SheetShop Act("vtab",{t}) / Act("iap",{id}) çağırır).
+# 12-panels'in çağıracağı G2 yöntemleri: ContractsBody(Transform), FairBody(Transform), RaceBody(Transform), SheetShop(Transform),
+#   ExtraRow(Transform,string u), WorkerBtn(Transform,string k), SpeedBtns(Transform,string kind,double ms,string u=null), DailyHTML(Transform),
+#   LoveRow(Transform,string u), FriendsBody(Transform). Hepsi parent'a (dikey yerleşimli kap) öğe ekler; SheetShop Head + kaydırılabilir gövde kurar.
+
+# ---- G7: 40-fun / 41-content ----
+WeeklyContest() -> string (yoksa null)                 // weeklyContest
+QuestHTML(Transform parent, string n) -> void          // questHTML
+GiveItems(Dictionary<string,int> out) -> string        // giveItems (düz metin döndürür: "+3 🌰 +₺12")
+QUESTS : Dictionary<string, …> (.ContainsKey)          // QUESTS
+EVENTS : Dictionary<string, …> (.ContainsKey)          // EVENTS
+PROJ : List<ProjDef>, ProjDef.id string                // PROJ
+ProjOn(string id) -> bool                              // projOn
+
+# ---- G2'nin diğerlerine sunduğu küresel adlar ----
+# TodayStr, AutoGain, AutoTick, LastReady, DocTitle, SHIFT, WORKER_LV, WorkOn, WorkersHired, WorkerMax, RenewWorker, RenewAll, Hire, Rescue, Automate,
+# GenContract, EnsureContracts, DeliverContract, FACES, Face, LvOf, CONTESTS, EnsureContests, EnterContest, TIERS, StableHorse, TrainHorse, LeagueRace,
+# MgOpen, MgEnd, MgMilk, MgEggs, MgHaggle, AD_MAX, AdsLeft, WatchAd, SpeedCost, FinishJob, SpeedUnit, SpeedFields, DECOR, SLOTN, BuyDecor,
+# LOGIN, RewardTxt, DTASK, CheckDaily, ShowLogin, CountReady, AwaySummary(double), NotifyReady, Migrate(State)->State,
+# ANAMES, LOVE_U, LoveOf, LoveBonus, PetAnimal(string u,int idx,float x,float y), FR_LV, FR_N, FR_PERK, FrOf, FrLv, FrMult, Hearts, Befriend, FriendGifts.
+# State eklemeleri: Contract.got/until/reward/xp/gems, Job.mg (int), ContestResult.entrants (List<ContestEntry>; JS'teki done[id].all dizisi).

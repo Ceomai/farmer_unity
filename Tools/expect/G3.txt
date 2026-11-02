@@ -1,0 +1,16 @@
+# --- G3 (06-engine) başka gruplardan çağırdıkları ---
+GFX -> GfxDef { bool shadows, low; int shadowSize, fpsCap; double pr, maxPR }   // 00-boot GFX (gölge, gölge haritası boyutu, kare sınırı, piksel oranı)
+Prog(Job j) -> double                          // 03-helpers prog (bahce/bag "olgun" denetimi)
+StageOf(Job j) -> int                          // 03-helpers stageOf (fieldBed ekin evresi)
+LerpA(double a, double b, double k) -> double  // 07-world lerpA (walkPerson dönüşü)
+# State alanları: S.weather.k, S.units[k].job / .l, S.decor.house["duvar"|"kose"|"masa"|"tavan"], S.decor.farm["bahce1"|"bahce2"|"giris"]
+
+# --- G3'ün sağladıkları (diğer grupların bilmesi gerekenler) ---
+# 00-boot setGfx → ApplyGfx(), SetPixelRatio(double) (06'da tanımlı)
+# Toon malzeme özellikleri: _Color (Material.color), _MainTex, _EmissionColor, _EmissionIntensity, _Opacity, _Transparent
+# Yarıküre ışığı: toon gölgelendirici RenderSettings Trilight ortamını (unity_AmbientSky/Ground) okur.
+#   Three ile birebir parlaklık için Eng_ApplyHemi(sky, ground, intensity) kullanın (doğrusal×yoğunluk düzeltmesi yapar);
+#   RenderSettings.ambientSkyColor = sky*intensity doğrudan verilirse ortam ışığı biraz koyu kalır.
+# OUT dış çizgi kalınlığı: OUT.SetFloat("_Thick", .0022f)
+# UData alanları (Engine/UData.cs): kind, loc, unit, plot, fx, head, tail, legs, arms, headRest, hop, tx, tz, wait, bs, chimney(float[]), curve(CatmullRomCurve3), vel, life, sz
+# Fx: AddFx(g, (dt,t)=>…) → UData.fx; toplama Eng_CollectFx(g); çalıştırma 25-desk worldTick / 33-loop (JS gibi). Puffs: StepPuffs(dt) worldTick'ten.

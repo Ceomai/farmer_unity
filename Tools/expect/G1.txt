@@ -1,0 +1,65 @@
+# G1 (000-config, 00-boot, 01-data, 02-state, 03-helpers, 04-economy, 05-farm-actions, 16-time-weather, 17-collection)
+# Başka gruplardan beklenen adlar. Konumlar (Vector3) aksi belirtilmedikçe UNITY dünya koordinatıdır.
+
+# --- G3 (06-engine) ---
+ApplyGfx() -> void                          // setGfx sonrası location.reload() yerine: GFX'i (shadows, shadowSize, rtScale, fpsCap) motora yeniden uygula
+SetPixelRatio(double pr) -> void            // R.setPixelRatio(pr) (çözünürlük ölçeği)
+Puff(Vector3 v, int n = 9, float sz = 1) -> void   // puff(v,n,sz)
+static Dictionary<string, Material> MC      // malzeme önbelleği; anahtar JS ile aynı: renk ondalık + "|" + (seçenek JSON) — ör. "6068798|"
+Grade(int hex) -> Color                     // grade(c)
+Rng(int seed) -> Func<double>               // rng(seed) (mulberry32)
+static Transform SCENE                      // world (THREE.Scene) kökü; yıldız ve kar nesneleri buraya eklenir
+Toon gölgelendirici özellikleri: "_Color" (Material.color), yayınım "_EmissionColor" (Color) ve "_EmissionIntensity" (float)   // m.emissive / m.emissiveIntensity (16: GLOWM gece parlaması, GROUND emissive)
+Gök arka planı: Shader küreselleri "_SkyTop" / "_SkyLow" (Color) okuyan bir gök/arka plan (JS: body linear-gradient). 16 ayrıca Camera.main.backgroundColor = low yazar.
+
+# --- G4 (07-world, 08-markers, 09-interiors, 15-fly-items, 29-celebrate, 30-window-react) ---
+UnitWorld(string u, float y = 0) -> Vector3     // unitWorld(u,y)
+PlotWorld(int i, float y = 0) -> Vector3        // plotWorld(i,y)
+static Transform GROUND                         // GROUND mesh (Renderer.sharedMaterial rengi/emissive'i mevsimle değişir)
+static Light Sun                                // sun (DirectionalLight); 16-ambience her karede konum/yön/renk/yoğunluk yazar
+static <Ctl türü> Ctl  with  Vector3 target      // ctl.target — THREE koordinatında (OrbitControls.target gibi)
+static Dictionary<string, Transform> LocGroups  // locGroups
+Squash(string k, string u = null) -> void       // squash(k,u)
+ScreenOfW(Vector3 p) -> Vector2                 // screenOfW(p): CSS px, sol üstten (x,y)
+MarkH(string u) -> float                        // markH(u)
+static string Mode                              // mode ('desk'|'hub'|'focus'|'interior')
+static <Interior türü> Interior  with  string key   // interior (null olabilir)
+BuildInterior(string key) -> void               // buildInterior(k)
+FlyCoins(int n = 5) -> void                     // flyCoins(n)
+FlyItems(float x, float y, Dictionary<string,int> out) -> void   // flyItems(x,y,out)
+Celebrate(string txt = null) -> void            // celebrate(txt)
+MarkRecent(string locKey, string n) -> void     // markRecent(locKey,n)
+(Hemisphere ışığı 16'da RenderSettings.ambient* (Trilight) ile sürülür; zemin rengi 0x7d6a3a. 07-world hemiL'i ayrıca ışık olarak kurmamalı.)
+
+# --- G5 (14-audio, 25-desk, 33-loop, 34-platform) ---
+Sfx(string k) -> void                           // sfx(k) — k null olabilir (UNIT_SFX'te olmayan bina): sessizce yok say
+static Dictionary<string, string> UNIT_SFX      // UNIT_SFX
+static bool Booted                              // booted
+static Color SkyTop                             // skyTop (16 her 0.25 sn'de atar)
+Resize() -> void                                // resize()
+static <Platform türü> PLATFORM  (null denetlenebilir örnek)  with  Backup(string json), Hap(string kind = "light")   // PLATFORM.backup(j), PLATFORM.hap()
+33-loop şunları çağırır (G1 sağlar): GfxAdapt(double ms), Game.LastFrame (JS _lastFrame), UpdateWeather(), ApplySeason(), Ambience(double dt,double t), StepWeather(double dt,double t)
+
+# --- G6 (12-panels, 13-events, index.template) ---
+Commit() -> void                                // commit()
+RenderSheet() -> void                           // renderSheet()
+static <View türü, referans> View               // view (05: View = null)
+Head(Transform parent, string thumb, string title, string sub) -> void   // head(thumb,title,sub)
+BodyHas(string cls) -> bool                     // document.body.classList.contains(cls) — 16-wxUI "photo" için
+13-events "albumDone" eylemini kaydeder (17 düğmesi Act("albumDone")).
+09-interiors setModeUI → WxUI() (G1).
+
+# --- G2 (18-workers, 24-daily, 26-animal-love, 27-friends) ---
+static int AutoGain (ya da double)              // autoGain (05-giveOut += n)
+TodayStr() -> string                            // todayStr()
+FrMult(string who) -> double                    // frMult(n)
+Befriend(string who, int n) -> void             // befriend(n,k)
+FrLv(string who) -> int                         // frLv(n)
+LoveBonus(string u) -> bool                     // loveBonus(u)
+
+# --- G5/35-cloud ---
+Track(string name, Dictionary<string, object> props) -> void   // track(name,props)
+
+# --- G7 (41-content, 40-fun) ---
+ProjOn(string id) -> bool                       // projOn(id)
+40-fun sheetAlbum sarmalayıcısı için kanca: Game.SheetAlbumBodyTop (Action<Transform>) — gövdenin (sh-body) başına sekmeleri kurar.

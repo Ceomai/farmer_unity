@@ -1,0 +1,47 @@
+# G4 (07-world, 08-markers, 09-interiors, 10-camera, 11-input, 15-fly-items, 29-celebrate, 30-window-react, 31-photo, 32-thumbnails)
+# Bu dosyalar mevcut projeyle (tam derleme: bash Tools/check.sh) hatasız derleniyor. Aşağıdaki imzalar şu anki tanımlarla eşleşiyor.
+
+## Çağırdığım dış adlar
+# G3 (06-engine / Engine/*)
+SCENE : Transform                                   // world kökü (Init_06 kurar)
+UData { loc, unit : string; plot : int; hop : float; fx : List<Action<float,float>>; legs, arms : List<Transform>; head, tail : Transform; chimney : float[] }
+MatOpts { color, emissive, side : int?; emissiveIntensity, opacity : float?; transparent : bool?; map : Texture; DoubleSide }
+PersonOpt { shirt, hatc, dress : int?; hat : string }
+G(Transform par, double[] p = null, double ry = 0) -> Transform
+P(Transform par, string g, int c, double[] s, double[] p, double[] r, MatOpts o) -> Transform ; P(Transform, string, Material, double[] s, double[] p, double[] r) -> Transform
+F(Transform par, int|Material c, double[] s, double[] p, double[] r = null) -> Transform
+Rng(double seed) -> Func<double>
+ToonMat(MatOpts) -> Material ; StdTex(Texture, MatOpts = null) -> Material ; M(int, MatOpts) ; MC : Dictionary<string,Material> ; OUT : Material ; GE : Dictionary<string,Mesh>
+TEX.grass() / water() / straw(double[] rep) / stone(double[] rep) / planks(string,string,double[] rep,bool vert) / kilim(string[]) -> Texture2D
+Eng_TexRepeat(Texture, float, float) ; Eng_Camera(string, float fov, float near, float far) -> Camera ; Eng_Sun(Transform, int, float, x,y,z, bool castShadow, int shadowSize) -> Light
+Eng_PointLight(Transform, int, float, float) -> Light ; Eng_HemiLight(Transform root, int, int, float) -> EngEnv ; Eng_SceneFog(Transform root, int, float, float) -> EngEnv
+Ribbon(Transform, IList<double[]> pts, double w, Material, double y, double segK, double vRep) -> Transform ; DirtMat()/DirtEdge() -> Material
+FenceRun(Transform, x1,z1,x2,z2, int c, double ht) ; Bush(Transform,x,z,s,int c) ; Flowers(Transform,x,z,r,int seed) ; Pine(Transform,x,z,s) ; Oak(Transform,x,z,s)
+SwayList : List<Action<float,float>> ; AddFx(Transform, Action<float,float>) ; AddSmoke(Transform host, float[] ch, Func<bool>, Transform fxHost) ; Puff(Vector3 three, int n, double sz)
+Chicken(int) / Cow(int,int,bool) / Sheep() / Horse(int,int,int?) -> Transform ; WanderFx(Transform,cx,cz,rx,rz,speed,peck) / IdleFx(Transform,ph) -> Action<float,float>
+FieldBed(Transform, Field) ; House(int) -> Transform ; Crate(Transform,x,z,s,int c) ; Person(PersonOpt) -> Transform ; IdlePerson(Transform,ph) / WalkPerson(Transform, double[][], speed, pause) -> Action<float,float>
+MODELS : Dictionary<string, Action<Transform, Unit>> ; KILIM : Dictionary<string,string[]> ; HouseDecor(Transform) ; FarmDecor(Transform) ; FairModel/MarketModel/HanModel(Transform)
+Well(Transform,x,z) ; Scarecrow(Transform,x,z) ; Foundation(Transform,bool locked) ; RaceTrack(Transform, Unit hara)
+# G1
+ITEMS, B, HOUSE, REG, LOC, INSIDE_UNITS : Dictionary<string,int>, LocOf(string), GFX.shadowSize/.low, Owned(r), Has(k), Stored(), Cap(), Prog(Job), StageOf(Job), Secs(int), UnitRecipe(u).@out,
+Scaled(Recipe,int).@out, Stat(string), Toast(string), FloatXY(x,y,string), RegCost(r), ReadyOrders(), CollectUnit(u,x,y)->bool, PlantPlot(i,rid)->bool, HarvestPlot(i,x,y)->bool, PlotTap(i,x,y), BuyPlot(),
+PopPlot : int?, PopLoc : string, SEASONS[i].n, Season(), GameDay(), WxUI()
+# G2
+EnsureContests(), CONTESTS (List; .id, .need Dictionary<string,int>), PetAnimal(u, idx, x, y)
+# G5
+Dcam, WinCam : Camera ; DeskObjs : Dictionary<string,Transform> ; DESKP : List<Transform> ; DeskTag (MonoBehaviour, .desk) ; DANCH : Dictionary<string,object[]> ; DNAMES : Dictionary<string,string[]>
+DeskStatus(k) (.c,.n) ; DeskAction(k) ; DeskPanRange() ; DcamX : float ; DPar : Vector2 ; HoverDesk : string ; EnterWorld(Action) ; Resize() ; PLATFORM.hap(string = "light")
+LastP : Vector2 ; Sfx(string) ; Tone(f,d,type,v,when) ; UNIT_SFX : Dictionary<string,string>
+# G6
+View (class View { k, loc, r, tab; mini }) ; THUMB : Dictionary<string,Texture> ; RenderSheet() ; OpenView(string) ; RenderStrip(bool) ; Commit() ; Dom.Q(sel) (.transform, .Rect()) ; DisposeBaked(Transform) ; BatchWatch(Transform)
+Act("harvestP"|"collectU", {id, cx, cy})   // marker baloncukları: cx,cy = öğenin üst-orta noktası (CSS px)
+
+## Sağladıklarım (diğer grupların kullandığı)
+Mode, Focus : string ; Interior : Int_Interior { key, scene, fx, sig, refresh() } ; Cam, Icam : Camera ; Ctl, Ictl : OrbitControls { target(THREE), position(THREE), enabled, Update()/update(), Poll(bool) }
+HUB_T, HUB_DIR (THREE), HUB_D ; HubLimits() ; FocusLimits() ; HubSaved : Cam_Saved{t,p} ; Fly ; StepFly() ; FlyCam/RotateCam/ZoomCam ; GoLocation ; ToHub ; OpenRegion
+HemiL : EngEnv ; Sun : Light ; GROUND, LampPost, RegG, RoadG, Farmer, Dog : Transform ; WorldFx, RegFx : List<Action<float,float>> ; WaterTex : Texture2D ; WaterMat : Material ; RegSig : string
+LocGroups ; SyncWorld(bool) ; SyncRegions() ; UnitWorld(u,y)/PlotWorld(i,y) -> Vector3 (THREE) ; Squash(k,u) ; LerpA ; FWave ; UData.{region,act,open,hasPlot,plotBuy,farmer,pop:double?,squash,allFx}
+MK ; LocStatus(k) -> Mk_Status{c,t,n} ; MarkH(u) ; SyncMarks() ; UpdateMarks() ; PlaceMarks() ; ScreenOfW(Vector3 three) -> Vector2 (CSS px)
+INT ; BuildInterior(k) ; DropInterior() ; IntSig(k) ; Fade(Action) ; ApplyUI() ; SetModeUI() ; EnterInterior(k) ; LeaveInterior()
+Int_BodyCls / Int_BodyHas / Int_BodyToggle / Int_OnBody / Int_BodyMode / Int_BackHidden / Int_BackText   // document.body sınıfları ve #backBtn durumu
+Swipe ; HoverLoc ; FlyOne/FlyItems(x,y,Dictionary<string,int>)/FlyCoins(n) ; Celebrate(txt) ; MarkRecent(loc, n) ; WIN_HOME ; StepWinCam(dt) ; Scaffold(ug, Unit) ; PhotoMode(bool) ; Shoot() ; MakeThumbs()

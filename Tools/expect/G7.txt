@@ -1,0 +1,75 @@
+# G7 (içerik: 28-farmer-talk, 37-tutorial, 39-guide, 40-fun, 41-content) — başka gruplardan beklenenler
+# --- G1 (01-data / 03-helpers / 04-economy / 05 / 16 / 17) ---
+ITEMS : Dictionary<string,ItemDef>        // n,e,p,buy
+CROPS : List<Recipe>                      // id,n,cost,@in,t,@out,lvl,col,season(List<int>, null = mevsimsiz)
+B : Dictionary<string,BuildingDef>        // n,e,d,cost,lvl,recipes,storage
+HOUSE : List<HouseDef>                    // n,e,cost,lvl
+REG : Dictionary<string,RegionDef>        // n,cost,lvl,rect
+LOC : Dictionary<string,LocDef>           // n,reg,e
+PLOT_COST, PLOT_LV, FIELD_UP : IEnumerable<int/double> (List)   // .Skip/.ElementAt ile okunur
+MAXL : int ; INSIDE_UNITS : Dictionary<string,int> (ContainsKey)
+LocOf(string u) -> string                 // locOf
+Has(string k) -> int                      // has
+Cap() -> int|double ; Stored() -> int|double   // cap, stored
+Gain(double n, string c) ; Pay(double n, string c)   // gain, pay
+Stat(string k, double n = 1)              // stat
+Secs(double s) -> string                  // secs
+AddXP(double n)                           // addXP
+XpNeed(int l) -> double|int               // xpNeed
+Toast(string msg)                         // toast (03-helpers)
+NAMES : List<string>                      // 04-economy
+Producible() -> List<string>              // producible
+ReadyOrders() -> int                      // readyOrders
+RefreshMarket(bool force)                 // refreshMarket
+EnsureOrders()                            // ensureOrders
+Fresh() -> State                          // fresh (02-state)
+Save()                                    // save
+SEASONS : List<{n,e}> ; Season() -> int ; DayFactor() -> double   // 16-time-weather
+COL : List<{id,n,e,src,p,bonus,hint}>     // 17-collection
+ShowFind(<COL öğesi>)                     // showFind
+SheetAlbumCol(Transform parent)           // 17-collection'ın sheetAlbum'u BU ADLA taşınmalı; G7'nin SheetAlbum'u bunu çağırır ve gövdesinde adı "sh-body" olan (ScrollRect ise .content'ine) ilk çocuk olarak sekmeleri ekler
+# --- G2 ---
+CONTESTS : List<{id,n,e,need:Dictionary<string,int>}>   // 20-fair
+TIERS : List<{n,fee,prize}>               // 21-horse-league
+WORKER_LV : int                           // 18-workers
+MgOpen(string title, string desc) -> {RectTransform body; Action onClose; RectTransform d}   // mgOpen (22-minigames)
+MgEnd(<MgOpen sonucu> o, string msg)      // mgEnd
+ShowLogin()                               // 24-daily
+LvOf(string u) -> int                     // 20-fair
+LOVE_U : List<string> ; LoveOf(string u) -> Love   // 26-animal-love
+FR_N : List<string> ; FrLv(string n) -> int ; Befriend(string n, int amt)   // 27-friends
+Face(string n) -> string                  // 19-contracts
+# --- G3/G4 ---
+GoLocation(string k)                      // 10-camera
+ToHub()                                   // 10-camera
+Mode : string ; Focus : string            // 09-interiors (mode, focus)
+SyncWorld(bool force)                     // 07-world
+RegSig : string                           // 07-world
+FlyCoins(int n)                           // 15-fly-items
+Celebrate(string txt)                     // 29-celebrate
+# --- G5 ---
+Sfx(string k)                             // 14-audio
+UNIT_SFX : Dictionary<string,string>      // 14-audio
+DeskAction(string k)                      // 25-desk
+DNAMES : Dictionary<string, string[] | List<string>>   // 25-desk ([0]=emoji,[1]=ad)
+PLATFORM.hap()                            // 34-platform
+Track(string name, Dictionary<string,object> props = null)   // 35-cloud
+# --- G6 ---
+View : null ya da {string k; string tab; ...}   // 12-panels view (View = null atanabilir)
+Race : null ya da {bool running}          // 12-panels race
+Head(Transform parent, string thumb, string title, string sub)   // head
+RenderHUD()                               // 13-events
+Commit(bool skipSheet = false)            // 13-events commit
+Act("vtab", D("t", k)) kayıtlı olmalı     // 13-events case 'vtab'
+# RenderSheet şunları çağırır: SheetAlbum(Transform) [G7 sahibi], SheetGuide(Transform) [G7]; loc 'orders' sekmesi 'p' → ProjBody(Transform); 'house' → GenHTML(Transform); 27-friends → QuestHTML(Transform, string n)
+# 13-events case'leri G7 de kaydeder (aynı davranış): proj→DoProj(id), gen→AskGen(), quest→DoQuest(n), ach→ClaimAch(id)
+
+# --- G7'nin SAĞLADIKLARI (diğer gruplar çağırır) ---
+# 33-loop: tick → if(S.consent!=null){TutStart();TutTick();} ... if(!photo) FarmerSay(); else SayHide(); ... FunTick();  kare: if(!SayHidden) PlaceBubble();
+#          boot → TutStep() -> int
+# 03/04/19/21/26: ProjOn(string id) -> bool ; 20-fair: WeeklyContest() -> string ; 24-daily/27: GiveItems(Dictionary<string,int>) -> string ; QUESTS : Dictionary<string,List<QuestDef>> ; PROJ : List<ProjDef>
+# 25-desk: AchReady() -> List<AchDef>
+# querySelector karşılığı (37-tutorial, 28 placeBubble): hedef arayüz öğeleri seçici ile etiketlenmeli:
+#   Game.Tut_Tag(Component öğe, params string[] seçiciler)  ya da GameObject adı = seçici. Beklenen seçiciler:
+#   [data-desk="map"] (08-markers masa etiketi), .scard[data-go="tarla"|"pazar"|"kumes"|"han"] (36-strip), .plot.empty, .plot.ready, .tile[data-u="kumes"], .order (12-panels),
+#   #backBtn (G6), [data-act="sell"][data-k="bugday"][data-n="999999"] (pazar "Tümü"), .hud (HUD çubuğu), #sheet (panel kabı; gizliyken etkin olmamalı)

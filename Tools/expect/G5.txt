@@ -1,0 +1,66 @@
+# G5 (14-audio, 25-desk, 33-loop, 34-platform, 35-cloud) — dışarıdan çağrılan adlar
+# (Bu imzaların çoğu yazılmış modüllerle doğrulandı; "BEKLENİYOR" olanlar henüz yazılmamış dosyalara ait.)
+
+## G1
+CONFIG.firebaseApiKey/firebaseProjectId/admobRewardedAndroid/admobRewardedIos/admobTesting/iapValidatorUrl/privacyUrl/termsUrl/supportEmail/version : string/bool   // CONFIG
+CONFIG.iapProducts : List<IapProductDef{string id; int gems}>   // CONFIG.iapProducts
+GFX.low, GFX.rtScale, GFX.fpsCap, GFX.mode, GFX.pr                // GFX
+static double LastFrame                                           // _lastFrame
+GfxAdapt(double ms) -> void                                       // gfxAdapt
+SAVE : string ; Load() -> State ; Fresh() -> State ; Save() -> void   // 02-state
+Has(string)->int ; Stored()->int ; Cap()->int ; Owned(string)->bool ; Stat(string,double=1) ; Secs(double)->string ; SecShort(double)->string ; FinRoll()   // 03-helpers
+ITEMS, REG (rect float[4]), LOC (p float[3], e, reg), B (n,e,recipes), CROPS, HOUSE   // 01-data
+RefreshMarket() ; EnsureOrders() ; SellPrice(string)->double ; SatF(string)->double ; Producible()->List<string> ; RepMult()->double ; ReadyOrders()->int ; GoalReady()->bool ; AutoSellTick()   // 04-economy
+QueueAll() -> int                                                 // 05 queueAll
+SEASONS[List<SeasonDef{n,e}>] ; Season()->int ; GameDay()->double ; DayPhase()->double ; DayFactor()->double ; UpdateWeather() ; ApplySeason() ; Ambience(double,double) ; StepWeather(double,double)   // 16
+COL : List<ColDef{id}>                                            // 17
+
+## G2
+Migrate(State)->State ; CheckDaily()->bool ; ShowLogin() ; CountReady()->int ; AwaySummary(double) ; NotifyReady()   // 24-daily
+static int AutoTick ; Automate()->bool ; Rescue()      // 18-workers
+EnsureContests()                                       // 20-fair
+EnsureContracts()->bool ; ContractsBody(Transform)     // 19-contracts
+Race.running (RaceState)                               // 21 / 12
+FriendGifts() ; FriendsBody(Transform)                 // 27-friends
+
+## G3 (06-engine)
+G(Transform, double[] p, double ry)->Transform ; P(Transform,string,int|Material,double[] s,double[] p,double[] r,MatOpt o)->Transform ; F(Transform,int|Material,double[],double[])->Transform
+M(int, MatOpt=null)->Material ; ToonMat(MatOpt)->Material ; StdTex(Texture)->Material ; Outline(Transform) ; TEX.planks(string,string,float[] rep,bool vert)->Texture2D
+Eng_TexRepeat(Texture,float,float) ; Eng_SetOpacity(Material,float) ; Eng_SetEmissiveIntensity(Material,float) ; StepPuffs(float)
+UData.pop (double?), UData.allFx (List<Action<float,float>>), UData.hop (float), UData.loc (string)
+
+## G4
+static string Mode ; static string Focus ; static Int_Interior Interior {key, scene, fx, sig, refresh} ; Icam : Camera ; Ictl : OrbitControls   // 09-interiors
+DropInterior() ; SetModeUI() ; Fade(Action) ; IntSig(string)->string ; LeaveInterior() ; Int_BodyHas("photo")->bool   // 09
+SCENE : Transform ; Cam : Camera ; Ctl : OrbitControls {enabled, target(THREE), position(THREE), Update()} ; HUB_T, HUB_DIR (THREE Vector3) ; HUB_D float ; HubLimits()   // 07
+WorldFx, RegFx : List<Action<float,float>> ; LocGroups : Dictionary<string,Transform> ; WaterMat : Material (waterTex.offset → mainTextureOffset) ; SyncWorld(bool force=false)   // 07
+Farmer, Dog, LampPost, RegG, RoadG : Transform                     // 07 (batchWatch filtresi)
+HubSaved : Cam_Saved{t,p} ; StepFly() ; ToHub() ; GoLocation(string)   // 10-camera
+SyncMarks() ; PlaceMarks()                                         // 08-markers
+StepWinCam(double)                                                 // 30-window-react
+PhotoMode(bool)                                                    // 31-photo
+MakeThumbs()                                                       // 32-thumbnails
+NOT: 07_World'deki regSig özeldir; 35-cloud adoptRemote'taki "regSig=''" atlanır (SyncRegions bölge kümesi değişince zaten yeniden kurar).
+
+## G6
+static View View {k, loc, tab, sig} ; OpenView(string) ; RenderSheet() ; SheetSig()->string ; Head(Transform,string,string,string) ; ShBody(Transform)->RectTransform ; OrdersBody(Transform) ; Sheet : RectTransform   // 12-panels
+Commit(bool skipSheet=false) ; RenderHUD()                         // 13-events   (BEKLENİYOR)
+RenderStrip()                                                      // 36-strip    (BEKLENİYOR)
+BatchWatch(Transform root, Func<Transform,bool> skip, double delay) ; BatchCheck()   // 38-batch (BEKLENİYOR)
+"vtab" eylemi (Act("vtab", D("t", …))) ; "copyCode" eylemi (GUIUtility.systemCopyBuffer = RecoveryCode(); toast)   // 13-events (BEKLENİYOR)
+UI kökünde adı "boot" olan açılış perdesi (#boot) — Boot() bulup 0,5 sn'de soldurur ve siler
+13-events'in Escape (keydown) işleyicisi NATIVE iken çalışmamalı: Android geri tuşu Unity'de Escape'tir ve PLATFORM.BackButton zaten işler.
+
+## G7
+SayHidden (bool) ; SayHide() ; FarmerSay() ; PlaceBubble()         // 28-farmer-talk
+TutStart() ; TutTick() ; TutStep()->int                            // 37-tutorial
+FunTick() ; AchReady()->List<AchDef>                               // 40-fun
+
+## G5'in sağladıkları (başkaları için)
+Sfx(string) ; Tone(double f,double d,string type=null,double v=0,double when=0,double slide=0,SndBus dest=null) ; AudioInit() ; ApplySound() ; UNIT_SFX ; Booted ; LastP (Vector2, CSS px)
+PLATFORM : PlatformBridge {ads, iap, adReady, prices; Init, Backup, Hap, ShowAd(Action)->bool, Buy(string), AskNotif(Action<bool?>), ScheduleReady, CancelReady, LocalNotify(title,body)} (+ küçük harfli JS adları: hap/showAd/buy/backup/askNotif)
+NATIVE (bool) ; PLAT ("android"|"ios"|"web")
+Track(string, object props=null) ; SyncCloud(bool pull, Action done=null) ; FlushEvents() ; ReportError(string msg,string stack) ; ConsentOk() ; RecoveryCode() ; RestoreAccount(string) ; AskConsent() ; AccountHTML(Transform) ; CLOUD{status,last} ; PLAYER ; Account() ; ServerTime(double)
+Consent.at (double) alanı 35-cloud'da tanımlı.
+DeskScene, Dcam, WinCam, Rt, SkyTop, DESKP, DeskObjs, DeskTag{desk,base,s0,pop,tagY}, DANCH (object[]: x,y,z[,"side"]), DNAMES, DeskStatus(k)->DeskStat{c,n}, DeskAction(k), DeskPanRange(), HoverDesk, DcamX, DPar, BuildDesk(), DeskSig, DeskSigNow(), RenderWindow(), ToDesk(), EnterWorld(Action after=null), WorldTick(float,float), SheetBorsa/SheetBudget/SheetStats/SheetLedger/SheetMail(Transform), Spark(Transform,List<double>), DESK_LAYER=30
+Resize() ; ViewOffset(Camera) ; Boot(State) ; Reload() (location.reload karşılığı) ; Loop_DataE(Image fill,double s,double e) (data-s/data-e) ; Loop_DataLeft(Text,double left,string pre,bool short) (data-left)
